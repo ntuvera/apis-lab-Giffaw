@@ -68,8 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
       loadMoreButton.className = 'btn btn-primary';
       loadMoreButton.id = 'more-button';
       loadMoreButton.innerText = 'Load More';
-      let searchButton = document.getElementsByName('search-button')[0];
-      searchButton.insertAdjacentElement('afterend', loadMoreButton);
+      document
+        .getElementsByName('search-button')[0]
+        .insertAdjacentElement('afterend', loadMoreButton);
 
       document.getElementById('more-button').addEventListener('click', e => {
         e.preventDefault();
@@ -87,8 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let userQuery = document.getElementsByClassName('gif-input')[0].value;
     queryGiphy(userQuery);
   });
-
-  // Setup code for adding gifs via click more button
 
   queryGiphy(); // initial search for 'dogs'
 });
