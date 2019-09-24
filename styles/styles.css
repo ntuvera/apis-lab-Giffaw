@@ -1,6 +1,11 @@
 .images {
+	height:	180px;
+	width:	180px;
+}
+
+.image-container{
 	display: inline-block;
-	height:	240px;
-	width:	240px;
+	height:	180px;
+	width:	180px;
 	margin:	10px;
 }

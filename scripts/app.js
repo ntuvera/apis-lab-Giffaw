@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const giphyApiRoute = `https://api.giphy.com/v1/gifs/search?q=cats&api_key=`;
   const giphyApiQueryRoute = `https://api.giphy.com/v1/gifs/search?q=`;
 
+  let offset = 0;
   // Giphy API Key -- lmited use: bad practice to store here, but for learning  purposes here it is
+
   // this will be refactored to separate, better for testing
   // function displayData(item) {
   //   let newImageCard = document.createElement('div');
@@ -13,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
   //   newImageCard.id = item.id;
   // }
 
-  function queryGiphy(query = 'dogs') {
-    console.log(giphyApiQueryRoute + query + giphyApiKey);
+  function queryGiphy(query = 'dogs', offset) {
+    let offsetParam = offset ? `&offset=${offset}` : '';
 
-    // clear and reset display div
-    fetch(giphyApiQueryRoute + query + giphyApiKey, {
-      method: 'GET', // Defines what kind of request
+    console.log(giphyApiQueryRoute + query + offsetParam + giphyApiKey);
+    fetch(giphyApiQueryRoute + query + offsetParam + giphyApiKey, {
+      method: 'GET',
     })
       .then(function(response) {
         return response.json();
@@ -27,20 +29,24 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(onError);
 
     function onSuccess(json) {
-      document.getElementsByClassName('gif-gallery')[0].innerHTML = '';
+      document.getElementsByClassName('gif-gallery')[0].innerHTML = ''; // clear and reset the gallery
       console.log(json);
 
       json.data.map(item => {
         let newDiv = document.createElement('div');
+        let newAnchor = document.createElement('a');
         let newImg = document.createElement('img');
-        // newDiv.className = 'col-sm-1';
         newDiv.className = 'image-container';
         newImg.className = 'images';
+        newAnchor.setAttribute('href', item.bitly_gif_url);
+        newAnchor.setAttribute('target', '_blank');
+        // add click img a href target="_blank"
         newImg.setAttribute(
           'src',
           `https://i.giphy.com/media/${item.id}/giphy.webp`
         );
-        newDiv.appendChild(newImg);
+        newDiv.appendChild(newAnchor);
+        newAnchor.appendChild(newImg);
         document.getElementsByClassName('gif-gallery')[0].appendChild(newDiv);
       });
     }
@@ -53,16 +59,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   queryGiphy(); // initial search
 
-  document
-    .getElementsByClassName('btn')[0]
-    // .addEventListener('submit', queryGiphy(query));
-    .addEventListener('click', e => {
-      // 'submit' vs 'click'
-      e.preventDefault();
-      let userQuery = document.getElementsByClassName('gif-input')[0].value;
-      // console.log('grabbed query: ', userQuery);
-      queryGiphy(userQuery);
-    });
+  document.getElementsByClassName('btn')[0].addEventListener('click', e => {
+    // 'submit' vs 'click' ??
+    e.preventDefault();
+    let userQuery = document.getElementsByClassName('gif-input')[0].value;
+    queryGiphy(userQuery);
+  });
+
+  // Setup code for adding gifs via click more button
+
+  // document
+  //   .getElementsByClassName('btn')[1]
+  //   // .addEventListener('submit', queryGiphy(query));
+  //   .addEventListener('click', e => {
+  //     // 'submit' vs 'click'
+  //     offset++;
+  //     e.preventDefault();
+  //     let userQuery = document.getElementsByClassName('gif-input')[0].value;
+  //     // console.log('grabbed query: ', userQuery);
+  //     queryGiphy(userQuery, offset);
+  //   });
 
   queryGiphy(); // initial search for 'dogs'
 });
