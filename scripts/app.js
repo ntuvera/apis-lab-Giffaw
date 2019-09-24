@@ -57,7 +57,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  queryGiphy(); // initial search
+  function loadMoreButton() {
+    let offset = 0;
+    let isButton = document.getElementById('more-button');
+    if (isButton != null) {
+      console.log('Load-More Button already found');
+    } else {
+      console.log('Generating Load-More Button');
+      let loadMoreButton = document.createElement('button');
+      // loadMoreButton.innerText = 'Load More';
+      loadMoreButton.setAttribute('value', 'Load More');
+      loadMoreButton.className = 'btn btn-primary';
+      loadMoreButton.id = 'more-button';
+      loadMoreButton.innerText = 'Load More';
+      let searchButton = document.getElementsByName('search-button')[0];
+      searchButton.insertAdjacentElement('afterend', loadMoreButton);
+
+      document.getElementById('more-button').addEventListener('click', e => {
+        e.preventDefault();
+        // 'submit' vs 'click'
+        console.log('offsetcount: ' + offset);
+        offset++;
+        let userQuery = document.getElementsByClassName('gif-input')[0].value;
+        console.log('grabbed query: ', userQuery);
+        // queryGiphy(userQuery, offset);
+      });
+    }
+  }
 
   document.getElementsByClassName('btn')[0].addEventListener('click', e => {
     // 'submit' vs 'click' ??
@@ -67,18 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Setup code for adding gifs via click more button
-
-  // document
-  //   .getElementsByClassName('btn')[1]
-  //   // .addEventListener('submit', queryGiphy(query));
-  //   .addEventListener('click', e => {
-  //     // 'submit' vs 'click'
-  //     offset++;
-  //     e.preventDefault();
-  //     let userQuery = document.getElementsByClassName('gif-input')[0].value;
-  //     // console.log('grabbed query: ', userQuery);
-  //     queryGiphy(userQuery, offset);
-  //   });
 
   queryGiphy(); // initial search for 'dogs'
 });
