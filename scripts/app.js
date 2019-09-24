@@ -1,5 +1,3 @@
-let jackpot;
-
 document.addEventListener('DOMContentLoaded', function() {
   // console.log('death to jQuery');
 
@@ -8,20 +6,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const giphyApiQueryRoute = `https://api.giphy.com/v1/gifs/search?q=`;
 
   // Giphy API Key -- lmited use: bad practice to store here, but for learning  purposes here it is
-  function displayData(item) {
-    let newImageCard = document.createElement('div');
-    newImageCard.className = 'card';
-    newImageCard.id = item.id;
-  }
+  // this will be refactored to separate, better for testing
+  // function displayData(item) {
+  //   let newImageCard = document.createElement('div');
+  //   newImageCard.className = 'card';
+  //   newImageCard.id = item.id;
+  // }
 
-  function queryGiphy() {
-    // fetch(`giphyApiRoute${giphyApiKey}`, {
-    // fetch(giphyApiRoute + giphyApiKey, {
-
-    let query = 'dogs';
-    console.log('------------------');
+  function queryGiphy(query = 'dogs') {
     console.log(giphyApiQueryRoute + query + giphyApiKey);
-    console.log('------------------');
+
+    // clear and reset display div
     fetch(giphyApiQueryRoute + query + giphyApiKey, {
       method: 'GET', // Defines what kind of request
     })
@@ -32,14 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(onError);
 
     function onSuccess(json) {
+      document.getElementsByClassName('gif-gallery')[0].innerHTML = '';
       console.log(json);
-      jackpot = json;
-      // $('div').append('<h1>' + json.title + '</h1>');
 
       json.data.map(item => {
         let newDiv = document.createElement('div');
         let newImg = document.createElement('img');
-        // newImg.setAttribute('src', item.images.looping.mp4);
+        // newDiv.className = 'col-sm-1';
+        newDiv.className = 'image-container';
         newImg.className = 'images';
         newImg.setAttribute(
           'src',
@@ -56,5 +51,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  queryGiphy();
+  queryGiphy(); // initial search
+
+  document
+    .getElementsByClassName('btn')[0]
+    // .addEventListener('submit', queryGiphy(query));
+    .addEventListener('click', e => {
+      // 'submit' vs 'click'
+      e.preventDefault();
+      let userQuery = document.getElementsByClassName('gif-input')[0].value;
+      // console.log('grabbed query: ', userQuery);
+      queryGiphy(userQuery);
+    });
+
+  queryGiphy(); // initial search for 'dogs'
 });
