@@ -5,15 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const giphyApiRoute = `https://api.giphy.com/v1/gifs/search?q=cats&api_key=`;
   const giphyApiQueryRoute = `https://api.giphy.com/v1/gifs/search?q=`;
 
-  let offset = 0;
-  // Giphy API Key -- lmited use: bad practice to store here, but for learning  purposes here it is
+  // let offset = 0;  // what are you if you're floating out here on your own?
 
-  // this will be refactored to separate, better for testing
-  // function displayData(item) {
-  //   let newImageCard = document.createElement('div');
-  //   newImageCard.className = 'card';
-  //   newImageCard.id = item.id;
-  // }
+  // Giphy API Key -- limited use: bad practice to store here, but for learning  purposes here it is
+
+  function displayResult(item) {
+    let newDiv = document.createElement('div');
+    let newAnchor = document.createElement('a');
+    let newImg = document.createElement('img');
+    newDiv.className = 'image-container';
+    newImg.className = 'result-images';
+    newAnchor.setAttribute('href', item.bitly_gif_url);
+    newAnchor.setAttribute('target', '_blank');
+    newImg.setAttribute(
+      'src',
+      `https://i.giphy.com/media/${item.id}/giphy.webp`
+    );
+    newDiv.appendChild(newAnchor);
+    newAnchor.appendChild(newImg);
+    document.getElementById('gif-gallery').appendChild(newDiv);
+  }
 
   function queryGiphy(query = 'dogs', offset = null) {
     let offsetParam = offset ? `&offset=${offset}` : '';
@@ -30,28 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function onSuccess(json) {
       document.getElementById('gif-gallery').innerHTML = ''; // clear and reset the gallery
-      document.getElementsByClassName('gif-input')[0].value = query; // clear and reset the gallery
       console.log(json);
 
       json.data.map(item => {
-        let newDiv = document.createElement('div');
-        let newAnchor = document.createElement('a');
-        let newImg = document.createElement('img');
-        newDiv.className = 'image-container';
-        newImg.className = 'images';
-        newAnchor.setAttribute('href', item.bitly_gif_url);
-        newAnchor.setAttribute('target', '_blank');
-        // add click img a href target="_blank"
-        newImg.setAttribute(
-          'src',
-          `https://i.giphy.com/media/${item.id}/giphy.webp`
-        );
-        newDiv.appendChild(newAnchor);
-        newAnchor.appendChild(newImg);
-        document.getElementById('gif-gallery').appendChild(newDiv);
+        displayResult(item);
       });
-
-      loadMoreButton();
+      loadMoreButton(query);
     }
 
     function onError(error) {
@@ -60,15 +55,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function loadMoreButton() {
+  function loadMoreButton(query) {
+    document.getElementsByClassName('gif-input')[0].value = query; // repopulate searchbox for more
     let offset = 0;
     let isButton = document.getElementById('more-button');
     if (isButton != null) {
-      console.log('Load-More Button already found');
+      // console.log('Load-More Button already found');
     } else {
-      console.log('Generating Load-More Button');
+      // console.log('Generating Load-More Button');
       let loadMoreButton = document.createElement('button');
-      // loadMoreButton.innerText = 'Load More';
       loadMoreButton.setAttribute('value', 'Load More');
       loadMoreButton.className = 'btn btn-primary';
       loadMoreButton.id = 'more-button';
@@ -79,10 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('more-button').addEventListener('click', e => {
         e.preventDefault();
         // 'submit' vs 'click'
-        // console.log('offsetcount: ' + offset);
         offset++;
         let userQuery = document.getElementsByClassName('gif-input')[0].value;
-        // console.log('grabbed query: ', userQuery);
         queryGiphy(userQuery, offset);
       });
     }
