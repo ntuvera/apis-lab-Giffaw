@@ -1,6 +1,12 @@
+.btn {
+	margin: 20px 20px;
+}
+
 .images {
-	height:	180px;
-	width:	180px;
+	/* height:	180px; */
+	/* width:	180px; */
+	height: 100%;
+	width: 100%;
 }
 
 .image-container{

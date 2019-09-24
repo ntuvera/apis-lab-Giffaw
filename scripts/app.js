@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
   //   newImageCard.id = item.id;
   // }
 
-  function queryGiphy(query = 'dogs', offset) {
+  function queryGiphy(query = 'dogs', offset = null) {
     let offsetParam = offset ? `&offset=${offset}` : '';
 
     console.log(giphyApiQueryRoute + query + offsetParam + giphyApiKey);
@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(onError);
 
     function onSuccess(json) {
-      document.getElementsByClassName('gif-gallery')[0].innerHTML = ''; // clear and reset the gallery
+      document.getElementById('gif-gallery').innerHTML = ''; // clear and reset the gallery
+      document.getElementsByClassName('gif-input')[0].value = query; // clear and reset the gallery
       console.log(json);
 
       json.data.map(item => {
@@ -47,8 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
         );
         newDiv.appendChild(newAnchor);
         newAnchor.appendChild(newImg);
-        document.getElementsByClassName('gif-gallery')[0].appendChild(newDiv);
+        document.getElementById('gif-gallery').appendChild(newDiv);
       });
+
+      loadMoreButton();
     }
 
     function onError(error) {
@@ -76,11 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('more-button').addEventListener('click', e => {
         e.preventDefault();
         // 'submit' vs 'click'
-        console.log('offsetcount: ' + offset);
+        // console.log('offsetcount: ' + offset);
         offset++;
         let userQuery = document.getElementsByClassName('gif-input')[0].value;
-        console.log('grabbed query: ', userQuery);
-        // queryGiphy(userQuery, offset);
+        // console.log('grabbed query: ', userQuery);
+        queryGiphy(userQuery, offset);
       });
     }
   }
